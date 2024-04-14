@@ -9,8 +9,6 @@ async fn main() {
     let mut vert: f32 = 0.0;
     let mut horiz: f32 = 0.0;
     let mut out_scale: f32 = 0.0;
-    let origin: Vec3 = vec3(0.0, 0.0, 0.0);
-    let unitvec: Vec3 = vec3(1.0, 1.0, 1.0);
     let xJitter = 0.4;
     let yJitter = 1.0;
     let zJitter = 0.4;
@@ -42,7 +40,11 @@ async fn main() {
         let mut point_array = vec![];
         for i in 1..20 {
             for j in 1..20 {
-                point_array.push(vec3(j as f32 - 10.0, 1.0, i as f32 - 10.0));
+                point_array.push(vec3(
+                    j as f32 - 10.0,
+                    0.0,
+                    i as f32 + (j as f32) / 2.0 - 10.0,
+                ));
             }
         }
         out_scale += 0.01;
@@ -78,8 +80,8 @@ async fn main() {
             col: vec4(1.0, 1.0, 1.0, 1.0),
         };
         let n = 1.3 + 0.001 * (out_scale.sin() * out_scale.sin()).powf(0.5) / 0.05;
-        line_grid.distance_based_line(point_array.clone(), n);
-
+        //line_grid.distance_based_line(point_array.clone(), n);
+        line_grid.constant_grid(point_array, n);
         set_default_camera();
         let textcen = get_text_center(
             "Test Time :|", //"ONLY THE DEAD KNOW PEACE FROM THIS SUFFERING",
@@ -112,23 +114,12 @@ impl Line_Grid {
         for i in 1..20 {
             for j in 1..20 {
                 let temp = gen_range(2, 8) as usize;
-                select_point.push([
-                    temp,
-                    temp,
-                   temp,
-                ]);
+                select_point.push([temp, temp, temp]);
             }
         }
-        let mut counter: i16 = 0;
         for v in vertex_set1.clone() {
             let mut temp_collection_points = vec![];
             for i in 1..vertex_set1.len() {
-                // if (((v.x - vertex_set1[i].x).powf(2.0)
-                //     + (v.y - vertex_set1[i].y).powf(2.0)
-                //     + (v.z - vertex_set1[i].z).powf(2.0))
-                // .powf(1.0 / 3.0)
-                //     < n)
-                // {
                 if v.distance(vertex_set1[i]) < n {
                     temp_collection_points.push(vertex_set1[i]);
                     for k in 1..(temp_collection_points.len()) {
@@ -140,88 +131,27 @@ impl Line_Grid {
                                 temp_collection_points[temp].y,
                                 temp_collection_points[temp].z,
                             ) + vec3(0.0, 0.05, 0.0),
-                            RED,
+                            BLUE,
                         );
                     }
-                    // while (counter < 10) {
-                    //     //let vec_index: usize = gen_range(1, temp_collection_points.len() - 1);
-                    //     //                    draw_line_3d(v, temp_collection_points[vec_index], BLUE);
-                    //     //draw_line_3d(v, vertex_set1[i], BLUE);
-                    //     //draw_line_3d(v, vertex_set1[i] + vec3(0.0, -0.05, 0.0), GREEN);
-                    //     counter += 1;
-                    // }
                 }
             }
             temp_collection_points.clear();
-            counter = 0;
         }
     }
 
-    fn point_line(vertex_set1: Vec<Vec3>, lines_per_point: i16, col: Vec4) {
-        vertex_set1[0];
-        draw_line_3d(
-            vertex_set1[0],
-            vertex_set1[2],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[1],
-            vertex_set1[3],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[5],
-            vertex_set1[7],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[4],
-            vertex_set1[6],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-
-        draw_line_3d(
-            vertex_set1[0],
-            vertex_set1[1],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[2],
-            vertex_set1[3],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[6],
-            vertex_set1[7],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[4],
-            vertex_set1[5],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-
-        draw_line_3d(
-            vertex_set1[0],
-            vertex_set1[4],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[1],
-            vertex_set1[5],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[3],
-            vertex_set1[7],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
-        draw_line_3d(
-            vertex_set1[2],
-            vertex_set1[6],
-            Color::from_rgba(col.x as u8, col.y as u8, col.z as u8, col.w as u8),
-        );
+    pub fn constant_grid(&mut self, vertex_set1: Vec<Vec3>, n: f32) {
+        for v in vertex_set1.clone() {
+            for i in 1..vertex_set1.len() {
+                if v.distance(vertex_set1[i]) < (n * 1.2) {
+                    draw_line_3d(
+                        v + vec3(0.0, 0.05, 0.0),
+                        vec3(vertex_set1[i].x, vertex_set1[i].y, vertex_set1[i].z)
+                            + vec3(0.0, 0.05, 0.0),
+                        BLUE,
+                    );
+                }
+            }
+        }
     }
 }
-
-
