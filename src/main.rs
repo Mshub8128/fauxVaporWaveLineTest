@@ -54,7 +54,7 @@ async fn main() {
             ..Default::default()
         });
 
-        let sincounter = (out_scale.sin() * 20.0).round() / 20.0; // / (PI)).trunc();
+        let sincounter = (out_scale.sin() * 30.0).round() / 30.0; // / (PI)).trunc();
 
         if (sincounter == 0.0) {
             point_array_jitter.clear();
@@ -72,13 +72,13 @@ async fn main() {
                 + point_array_jitter[k] * out_scale.sin() * 0.5;
         }
 
-        let mut cube = Cube {
+        let mut line_grid = Line_Grid {
             pos: point_array.clone(),
             scale: vec3(1.0, 1.0, 1.0),
             col: vec4(1.0, 1.0, 1.0, 1.0),
         };
         let n = 1.3 + 0.001 * (out_scale.sin() * out_scale.sin()).powf(0.5) / 0.05;
-        cube.distance_based_line(point_array.clone(), n);
+        line_grid.distance_based_line(point_array.clone(), n);
 
         set_default_camera();
         let textcen = get_text_center(
@@ -100,21 +100,22 @@ async fn main() {
     }
 }
 
-struct Cube {
+struct Line_Grid {
     pos: Vec<Vec3>,
     scale: Vec3,
     col: Vec4,
 }
 
-impl Cube {
+impl Line_Grid {
     pub fn distance_based_line(&mut self, vertex_set1: Vec<Vec3>, n: f32) {
         let mut select_point = vec![];
         for i in 1..20 {
             for j in 1..20 {
+                let temp = gen_range(2, 8) as usize;
                 select_point.push([
-                    gen_range(2, 8) as usize,
-                    gen_range(2, 8) as usize,
-                    gen_range(2, 8) as usize,
+                    temp,
+                    temp,
+                   temp,
                 ]);
             }
         }
@@ -223,8 +224,4 @@ impl Cube {
     }
 }
 
-// fn cubening(pos: Vec3, scale: Vec3, col: Vec4, weirdness: Vec3) {
-//     for i in (weirdness.x as i32)..(weirdness.y as i32) {
-//         cube(pos, scale * ((weirdness.z).powf(i as f32)), col);
-//     }
-// }
+
