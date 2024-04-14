@@ -60,9 +60,9 @@ async fn main() {
             point_array_jitter.clear();
             for i in 1..400 {
                 point_array_jitter.push(vec3(
-                    gen_range(-xJitter, xJitter),
+                    gen_range(0.0, xJitter),
                     gen_range(-yJitter, yJitter),
-                    gen_range(-zJitter, zJitter),
+                    gen_range(-zJitter, 0.0),
                 ));
             }
         }
